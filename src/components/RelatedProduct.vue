@@ -14,9 +14,9 @@
                     <carousel class="product-slider" :items="3" :nav="false" :autoplay="true"  :dots="false">
                         <div class="product-item mr-4" v-for="itemProduct in products" v-bind:key="itemProduct.slug">
                             <div class="pi-pic">
-                                <img v-bind:src="itemProduct.galleries[0].photo" alt="" style="height:424px">
+                                <img v-bind:src="`http://127.0.0.1:8000/storage/`+itemProduct.photo" alt="" style="height:424px">
                                 <ul>
-                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.galleries[0].photo)" class="w-icon active">
+                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.photo)" class="w-icon active">
                                         <a href="#"><i class="icon_bag_alt"></i></a>
                                     </li>
                                     <li class="quick-view">
@@ -61,11 +61,12 @@ export default {
     data() {
         return {
             products: [],
-            cart:[]
+            cart:[],
         };
     },
 
     mounted() {
+        // localStorage.removeItem("search");
         axios  
             .get("http://127.0.0.1:8000/api/products")
             .then(res => (this.products = res.data.data.data))
@@ -86,7 +87,7 @@ export default {
                 "id" : idProduct,
                 "name" : nameProduct,
                 "price" : priceProduct,
-                "photo" : photoProduct
+                "photo" : `http://127.0.0.1:8000/storage/`+photoProduct
             }
 
             this.cart.push(productStored);

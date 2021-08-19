@@ -30,6 +30,7 @@
                                         <tr>
                                             <th>Image</th>
                                             <th class="p-name text-center">Product Name</th>
+                                            <th class="p-name text-center">Qty</th>
                                             <th>Price</th>
                                             <th>Action</th>
                                         </tr>
@@ -41,6 +42,9 @@
                                             </td>
                                             <td class="cart-title first-row text-center">
                                                 <h5>{{ cartUser.name }}</h5>
+                                            </td>
+                                            <td class="cart-title first-row text-center">
+                                                <h5>{{ cartUser.jumlah }}</h5>
                                             </td>
                                             <td class="p-price first-row">Rp {{ cartUser.price | numFormat }}</td>
                                             <td @click="removeItem(cart.index)" class="delete-item">
@@ -138,17 +142,20 @@
                 let productId = this.cart.map(function(product){
                     return product.id
                 });
+                let productJumlah = this.cart.map(function(product){
+                    return product.jumlah
+                });
 
                 let checkoutData = {
                     name : this.customerInfo.name,
                     email : this.customerInfo.email,
                     number : this.customerInfo.number,
                     address : this.customerInfo.address,
+                    qty: productJumlah,
                     transaction_total : this.grandTotal,
                     transaction_status : "PENDING",
-                    transaction_details : productId
+                    transaction_details : productId,
                 };
-
                 axios 
                     .post(
                         "http://127.0.0.1:8000/api/checkout", checkoutData

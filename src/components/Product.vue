@@ -12,12 +12,12 @@
 
 
        
-                    <div class="row">
+                    <div class="row" v-if="products.length > 0">
                         <div class="product-item col-lg-3" v-for="itemProduct in products" v-bind:key="itemProduct.slug">
                             <div class="pi-pic">
-                                <img v-bind:src="itemProduct.galleries[0].photo" alt="" style="height:424px">
+                                <img v-bind:src="`http://127.0.0.1:8000/storage/`+itemProduct.photo" alt="" style="height:424px">
                                 <ul>
-                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.galleries[0].photo)" class="w-icon active">
+                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.photo)" class="w-icon active">
                                         <a href="#"><i class="icon_bag_alt"></i></a>
                                     </li>
                                     <li class="quick-view">
@@ -36,6 +36,9 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-lg-12" v-else>
+                        <p>Produk belum tersedia untuk saat ini.</p>
                     </div>
            
         </div>
@@ -100,11 +103,28 @@ export default {
         };
     },
     mounted() {
+        localStorage.setItem("searchbar", true);
+        if(localStorage.getItem("search")){
+            const data = {value: localStorage.getItem("search")};
         axios  
-            .get("http://127.0.0.1:8000/api/products")
-            .then(res => (this.products = res.data.data.data))
+            .post("http://127.0.0.1:8000/api/products", data)
+            .then(res => {
+                this.products = res.data.data
+                // localStorage.setItem("stok", res.data.data.quantity);
+                })
             // eslint-disable-next-Line no-console
             .catch(err => console.log(err))
+            localStorage.removeItem("search");
+        }else{
+        axios  
+            .get("http://127.0.0.1:8000/api/products")
+            .then(res => {
+                this.products = res.data.data.data
+                // localStorage.setItem("stok", res.data.data.quantity);
+                })
+            // eslint-disable-next-Line no-console
+            .catch(err => console.log(err))     
+        }
 
         if (localStorage.getItem("cart")) {
             try {
@@ -120,7 +140,7 @@ export default {
                 "id" : idProduct,
                 "name" : nameProduct,
                 "price" : priceProduct,
-                "photo" : photoProduct
+                "photo" : `http://127.0.0.1:8000/storage/`+photoProduct
             }
 
             this.cart.push(productStored);
@@ -128,6 +148,9 @@ export default {
             localStorage.setItem("cart", parsed);
 
             window.location.reload();
+        },
+        onClick(){
+            localStorage.removeItem("search");
         }
     }
 }

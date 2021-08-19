@@ -24,14 +24,14 @@
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 pl-5">
-                        <form class="mt-2" action="" method="GET">
+                        <form class="mt-2">
                             <div class="input-group">
                                 <input class="form-control bg-light border-0 small" type="text" name="search" 
-                                placeholder="Search Product Here..." aria-label="Search" aria-describedby="basic-addon">
+                                placeholder="Search Product Here..." aria-label="Search" aria-describedby="basic-addon" v-model="Search">
                                 <div class="input-group-append">
-                                    <button class="btn btn-warning text-white" type="submit">
+                                    <a @click="onClick(Search)" class="btn btn-warning text-white">
                                         <i class="icon_search_alt"></i>
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                             
@@ -57,7 +57,7 @@
                                                     </td>
                                                     <td class="si-text">
                                                         <div class="product-selected">
-                                                            <p>Rp {{ cartUser.price | numFormat }} x 1</p>
+                                                            <p>Rp {{ cartUser.price/cartUser.jumlah | numFormat }} x {{ cartUser.jumlah }}</p>
                                                             <h6>{{ cartUser.name }}</h6>
                                                         </div>
                                                     </td>
@@ -97,7 +97,9 @@ export default {
     name: 'Header',
     data() {
         return {
-            cart: []
+            cart: [],
+            Search:'',
+            status:'',
         }
     },
     methods: {
@@ -119,9 +121,14 @@ export default {
             window.location.reload();
             //eslint-disable-next-line no-console
             console.log(index);
+        },
+        onClick(value){
+            localStorage.setItem("search", value);
+            window.location.href = 'Home';
         }
     },
     mounted() {
+        
         if (localStorage.getItem('cart')) {
             try {
                 this.cart = JSON.parse(localStorage.getItem('cart'));
@@ -136,7 +143,7 @@ export default {
                 return items + data.price;
             }, 0)
         }
-    }
+    },
 }
 </script>
 

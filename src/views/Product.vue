@@ -43,16 +43,22 @@
                             <div class="product-details text-left">
                                 <div class="pd-title">
                                     <span>{{ productDetails.type }}</span>
+                                    <h3 class="stoks">{{ stok }}</h3>
                                     <h3>{{ productDetails.name}}</h3>
                                 </div>
                                 <div class="pd-desc">
                                     <p v-html="productDetails.description"></p>
                                     <h4>Rp {{ productDetails.price | numFormat }}</h4>
+                                    <div class="row">
+                                            <button class="minus" @click="minus()">-</button>
+                                            <h3 class="qty">{{ jumlah }}</h3>
+                                            <button class="plus" @click="plus()">+</button>
+                                    </div>
                                 </div>
                                 <div class="quantity">
-                                    <router-link to="/cart">
-                                        <a @click="saveCart(productDetails.id, productDetails.name, productDetails.price, productDetails.galleries[0].photo)" href="#" class="primary-btn pd-cart">Add To Cart</a>
-                                    </router-link>
+                                <router-link to="/cart">
+                                    <a @click="saveCart(productDetails.id, productDetails.name, productDetails.price, productDetails.photo, jumlah)" href="#" class="primary-btn pd-cart">Add To Cart</a>
+                                </router-link>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +97,10 @@ export default {
         return {
             gambar_default:"",
             productDetails: [],
-            cart: []
+            cart: [],
+            jumlah:1,
+            harga:0,
+            stok:"",
         }
     },
     methods: {
@@ -101,19 +110,65 @@ export default {
         setDataPicture(data) {
             //replace object productDetails dengan data dari API
             this.productDetails = data;
+            this.harga = data.price;
             //replace value gambar_default dengan data dari API (galleries)
-            this.gambar_default = data.galleries[0].photo
+            this.gambar_default = 'http://127.0.0.1:8000/storage/'+data.photo
         },
-        saveCart(idProduct, nameProduct, priceProduct, photoProduct) {
-            var productStored = {
-                "id" : idProduct,
-                "name" : nameProduct,
-                "price" : priceProduct,
-                "photo" : photoProduct
+        saveCart(idProduct, nameProduct, priceProduct, photoProduct, jumlah) {
+            let data = this.cart;
+            let index;
+            if(data != 0){
+                for (var key in  data) {
+                    if(idProduct === data[key].id){
+                        index = key;
+                    }
+                }
+                    if(index != null){
+                        this.cart[index].jumlah += jumlah;
+                        this.cart[index].price += priceProduct;
+                    }else{
+                        var productStoreds = {
+                            "id" : idProduct,
+                            "name" : nameProduct,
+                            "price" : priceProduct,
+                            "photo" : 'http://127.0.0.1:8000/storage/'+photoProduct,
+                            "jumlah" : jumlah,
+                        }
+                        this.cart.push(productStoreds);
+                    }
+            }else if(data == 0){
+                var productStored = {
+                    "id" : idProduct,
+                    "name" : nameProduct,
+                    "price" : priceProduct,
+                    "photo" : 'http://127.0.0.1:8000/storage/'+photoProduct,
+                    "jumlah" : jumlah,
+                }
+                this.cart.push(productStored);
             }
-            this.cart.push(productStored);
             const parsed = JSON.stringify(this.cart);
             localStorage.setItem('cart', parsed);
+            // localStorage.setItem('stok', 0);
+            // console.log(localStorage.getItem('stok'))
+        },
+        plus(){
+            if(this.productDetails.quantity > this.jumlah){
+                this.jumlah++
+                this.productDetails.price = this.harga * this.jumlah
+            }else{
+                this.productDetails.quantity = 0
+            }
+        },
+        minus(){
+            if(this.jumlah === 1){
+                this.jumlah = 1
+            }else if(this.jumlah === 0){
+                this.jumlah = 0
+                this.productDetails.price = this.harga * this.jumlah
+            }else{
+                this.jumlah--
+                this.productDetails.price = this.harga * this.jumlah
+            }
         }
     },
     mounted() {
@@ -124,17 +179,36 @@ export default {
                 localStorage.removeItem('cart');
             }
         }
-
         axios  
             .get("http://127.0.0.1:8000/api/products", {
                 params: {
                     slug: this.$route.params.slug
                 }
             })
-            .then(res => (this.setDataPicture(res.data.data)))
+            .then(res => {
+                this.setDataPicture(res.data.data)
+                console.log(this.cart)
+                // if(this.productDetails.id == )
+                let data = this.cart;
+                let jumlah;
+                if(data != 0){
+                    for (var key in  data) {
+                        if(this.productDetails.id === data[key].id){
+                            jumlah = data[key].jumlah;
+                        }
+                    }
+                    if(this.productDetails.quantity-jumlah === 0){
+                        this.jumlah = 0;
+                        this.productDetails.quantity = 0;
+                        this.productDetails.price = 0;
+                        this.stok = "[Stok Tidak Cukup]";
+                    }
+                }
+            })
             //eslint-disable-next-Line no-console
             .catch(err => console.log(err))
 
+            // 
         
     }
   
@@ -145,5 +219,28 @@ export default {
     .product-thumbs .pt {
         margin-left: 7px;
         margin-right: 7px;
+    }
+    .qty {
+        color:#333333;
+        font-weight:bold;
+        margin:10px;
+    }
+    .pd-title .stoks {
+        color:RED;
+        font-weight:bold;
+    }
+    .minus{
+        background:#AAAAAA;
+        width:30px;
+        height:30px;
+        text-align:center;
+        margin:15px;
+    }
+    .plus{
+        background:#AAAAAA;
+        width:30px;
+        height:30px;
+        text-align:center;
+        margin:15px;
     }
 </style>
