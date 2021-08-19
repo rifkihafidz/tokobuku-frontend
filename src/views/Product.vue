@@ -26,7 +26,7 @@
                             <div class="product-pic-zoom">
                                 <img class="product-big-img" :src="gambar_default" alt="" style="height:580px"/>
                             </div>
-                            <div class="product-thumbs" v-if="productDetails.galleries.length > 0">
+                            <!-- <div class="product-thumbs" v-if="productDetails.galleries.length > 0">
                                 <carousel class="product-thumbs-track ps-slider" :dots="false" :nav="false">
                                     <div
                                         v-for="thumb in productDetails.galleries"
@@ -37,7 +37,7 @@
                                             <img :src="thumb.photo" alt />
                                     </div>
                                 </carousel>
-                            </div>
+                            </div>-->
                         </div>
                         <div class="col-lg-6">
                             <div class="product-details text-left">
@@ -76,7 +76,7 @@
  import Footer from '@/components/Footer.vue'
  import RelatedProduct from '@/components/RelatedProduct.vue'
  
- import carousel from "vue-owl-carousel"
+//  import carousel from "vue-owl-carousel"
  import axios from "axios"
 
 export default {
@@ -85,7 +85,7 @@ export default {
     Header,
     RelatedProduct,
     Footer,
-    carousel
+    // carousel
   },
     data() {
         return {

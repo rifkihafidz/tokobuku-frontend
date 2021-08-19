@@ -1,7 +1,45 @@
 <template>
     <!-- Women Banner Section Begin -->
     <section class="women-banner spad">
-        <div class="container-fluid">
+    <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-title mt-3">
+                        <h2>Daftar Produk</h2>
+                    </div>
+                </div>
+            </div>
+
+
+       
+                    <div class="row">
+                        <div class="product-item col-lg-3" v-for="itemProduct in products" v-bind:key="itemProduct.slug">
+                            <div class="pi-pic">
+                                <img v-bind:src="itemProduct.galleries[0].photo" alt="" style="height:424px">
+                                <ul>
+                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.galleries[0].photo)" class="w-icon active">
+                                        <a href="#"><i class="icon_bag_alt"></i></a>
+                                    </li>
+                                    <li class="quick-view">
+                                        <router-link v-bind:to="'/product/'+itemProduct.slug"> Quick View</router-link>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="pi-text">
+                                <div class="catagory-name">{{ itemProduct.type }}</div>
+                                <router-link v-bind:to="'/product/' + itemProduct.slug">
+                                    <h5>{{ itemProduct.name }}</h5>
+                                </router-link>
+                                <div class="product-price">
+                                    Rp {{ itemProduct.price | numFormat }}
+                                    <!-- <span>$35.00</span> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+           
+        </div>
+        <!--<div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title">
@@ -29,7 +67,6 @@
                                 </router-link>
                                 <div class="product-price">
                                     Rp {{ itemProduct.price | numFormat }}
-                                    <!-- <span>$35.00</span> -->
                                 </div>
                             </div>
                         </div>
@@ -41,20 +78,20 @@
                     <p>Produk terbaru belum tersedia untuk saat ini.</p>
                 </div>
             </div>
-        </div>
+        </div>-->
     </section>
     <!-- Women Banner Section End -->
 </template>
 
 <script>
-import carousel from "vue-owl-carousel";
+// import carousel from "vue-owl-carousel";
 import axios from "axios";
 
 
 export default {
     name: 'Product',
     components: {
-        carousel
+        // carousel
     },
     data() {
         return {
@@ -98,6 +135,5 @@ export default {
 
 <style scoped>
     .product-item {
-        margin-right: 25px;
     }
 </style>

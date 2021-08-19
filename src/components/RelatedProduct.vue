@@ -16,11 +16,15 @@
                             <div class="pi-pic">
                                 <img v-bind:src="itemProduct.galleries[0].photo" alt="" style="height:424px">
                                 <ul>
-                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemPRoduct.galleries[0].photo)" class="w-icon active">
+                                    <li @click="saveCart(itemProduct.id, itemProduct.name, itemProduct.price, itemProduct.galleries[0].photo)" class="w-icon active">
                                         <a href="#"><i class="icon_bag_alt"></i></a>
                                     </li>
                                     <li class="quick-view">
-                                        <router-link v-bind:to="'/product/'+itemProduct.slug"> Quick View</router-link>
+                                    <!-- 
+
+                                        <a v-bind:href="'/product/'+itemProduct.slug"> Quick View</a>
+                                        -->
+                                        <router-link v-bind:to="'/product/'+itemProduct.slug" @click.native="link()"> Quick View</router-link>
                                     </li>
                                 </ul>
                             </div>
@@ -89,6 +93,9 @@ export default {
             const parsed = JSON.stringify(this.cart);
             localStorage.setItem("cart", parsed);
 
+            window.location.reload();
+        },
+        link(){
             window.location.reload();
         }
     }

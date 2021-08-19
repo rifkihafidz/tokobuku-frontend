@@ -156,6 +156,8 @@
                     .then(() => this.$router.push("success"))
                     //eslint-disable-next-lint no-console
                     .catch(err => console.log(err));
+
+                    localStorage.removeItem("cart");
             }
         },
         mounted() {
