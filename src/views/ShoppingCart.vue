@@ -9,7 +9,7 @@
           <div class="col-lg-12">
             <div class="breadcrumb-text product-more text-left">
               <a href="./home.html"><i class="fa fa-home"></i> Home</a>
-              <span>Shopping Cart</span>
+              <span>Keranjang Belanja</span>
             </div>
           </div>
         </div>
@@ -28,11 +28,11 @@
                   <table>
                     <thead>
                       <tr>
-                        <th>Image</th>
-                        <th class="p-name text-center">Product Name</th>
+                        <th>Gambar</th>
+                        <th class="p-name text-center">Nama Buku</th>
                         <th class="p-name text-center">Qty</th>
-                        <th>Price</th>
-                        <th>Action</th>
+                        <th>Harga</th>
+                        <th>Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -64,7 +64,7 @@
                   Informasi Pembeli:
                 </h4>
                 <div class="user-checkout text-left">
-                  <form>
+                  <form @submit="checkForm">
                     <div class="form-group">
                       <label for="namaLengkap">Nama lengkap</label>
                       <input
@@ -90,7 +90,7 @@
                     <div class="form-group">
                       <label for="namaLengkap">No. HP</label>
                       <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         id="noHP"
                         aria-describedby="noHPHelp"
@@ -133,12 +133,26 @@
                       No. Rekening <span>2208 1996 1403</span>
                     </li>
                     <li class="subtotal mt-3">
-                      Nama Penerima <span>Kicks Supply</span>
+                      Nama Penerima <span>Books Supply</span>
                     </li>
                   </ul>
                   <!-- <router-link to="/success"> -->
-                  <a @click="checkout()" href="#" class="proceed-btn"
-                    >I ALREADY PAID</a
+                  <a
+                    @click="checkout()"
+                    href="#"
+                    class="proceed-btn"
+                    type="submit"
+                    v-if="
+                      this.customerInfo.name &&
+                        this.customerInfo.email &&
+                        this.customerInfo.number &&
+                        this.customerInfo.address &&
+                        this.cartNotEmpty
+                    "
+                    >Konfirmasi Pembayaran</a
+                  >
+                  <a href="#" class="proceed-btn-disabled" type="submit" v-else
+                    >Konfirmasi Pembayaran</a
                   >
                   <!-- </router-link> -->
                 </div>
@@ -164,6 +178,7 @@ export default {
   data() {
     return {
       cart: [],
+      errors: [],
       customerInfo: {
         name: "",
         email: "",
@@ -171,6 +186,7 @@ export default {
         address: "",
       },
       uuid: "",
+      cartNotEmpty: true,
     };
   },
   methods: {
@@ -178,6 +194,9 @@ export default {
       this.cart.splice(index, 1);
       const parsed = JSON.stringify(this.cart);
       localStorage.setItem("cart", parsed);
+      if (this.cart.length === 0) {
+        this.cartNotEmpty = false;
+      }
     },
     //function mengirim data ke API
     checkout(uuid) {
@@ -208,7 +227,7 @@ export default {
         .then(
           () =>
             window.open(
-              `https://api.whatsapp.com/send?phone=6285921279924&text=Halo%2C+saya+sudah+melakukan+pembayaran+pembelian+buku+dengan+nomor+transaksi+${uuid}+Berikut+saya+lampirkan+foto+bukti+pembayaran`
+              `https://api.whatsapp.com/send?phone=6281393923990&text=Halo%2C+saya+sudah+melakukan+pembayaran+pembelian+buku+dengan+nomor+transaksi+${uuid}+Berikut+saya+lampirkan+foto+bukti+pembayaran`
             ),
           this.$router.push("success")
         )
@@ -216,6 +235,18 @@ export default {
         .catch((err) => console.log(err));
 
       localStorage.removeItem("cart");
+    },
+    checkForm: function(e) {
+      this.errors = [];
+      if (
+        !this.customerInfo.name ||
+        !this.customerInfo.email ||
+        !this.customerInfo.number ||
+        !this.customerInfo.address
+      ) {
+        this.errors.push("Tolong isi semua form dengan benar.");
+      }
+      e.preventDefault();
     },
   },
   mounted() {

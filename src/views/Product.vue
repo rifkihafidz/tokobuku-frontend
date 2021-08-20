@@ -74,7 +74,7 @@
                         "
                         href="#"
                         class="primary-btn pd-cart"
-                        >Add To Cart</a
+                        >Masukkan Keranjang</a
                       >
                     </router-link>
                   </div>
@@ -219,6 +219,11 @@ export default {
             this.productDetails.quantity = 0;
             this.productDetails.price = 0;
             this.stok = "[Stok Tidak Cukup]";
+          } else if (this.productDetails.quantity == 0) {
+            this.jumlah = 0;
+            this.productDetails.quantity = 0;
+            this.productDetails.price = 0;
+            this.stok = "[Stok Habis]";
           }
         } else if (this.productDetails.quantity == 0) {
           this.jumlah = 0;

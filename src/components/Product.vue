@@ -25,7 +25,7 @@
             <ul>
               <li class="quick-view">
                 <router-link v-bind:to="'/product/' + itemProduct.slug">
-                  Quick View</router-link
+                  Detail Buku</router-link
                 >
               </li>
             </ul>

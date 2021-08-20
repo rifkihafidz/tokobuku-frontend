@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="section-title">
-            <h2>Related Products</h2>
+            <h2>Buku Lainnya</h2>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
                       v-bind:to="'/product/' + itemProduct.slug"
                       @click.native="link()"
                     >
-                      Quick View</router-link
+                      Detail Buku</router-link
                     >
                   </li>
                 </ul>
